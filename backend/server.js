@@ -6,6 +6,8 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
 import applicationRoutes from "./routes/applicationRoutes.js";
+import resumeRoutes from "./routes/resumeRoutes.js";
+import dashboardRoutes from "./dashboard/dashboardRoutes.js";
 
 dotenv.config();
 
@@ -21,6 +23,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/applications", applicationRoutes);
+app.use("/api/resume", resumeRoutes);
+app.use("/uploads", express.static("uploads"));
+app.use("/api/dashboard", dashboardRoutes);
 
 // Test API
 app.get("/", (req, res) => {
