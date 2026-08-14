@@ -26,8 +26,7 @@ const MyApplications = () => {
         }
       } catch (error) {
         setMessage(
-          error.response?.data?.message ||
-            "Failed to load applications"
+          error.response?.data?.message || "Failed to load applications"
         );
       } finally {
         setLoading(false);
@@ -37,10 +36,12 @@ const MyApplications = () => {
     getApplications();
   }, []);
 
+  // Loading state
   if (loading) {
     return <div>Loading applications...</div>;
   }
 
+  // Error message
   if (message) {
     return <div>{message}</div>;
   }
@@ -62,27 +63,27 @@ const MyApplications = () => {
 
               <p>
                 <strong>Company:</strong>{" "}
-                {application.job?.company}
+                {application.job?.company || "Not available"}
               </p>
 
               <p>
                 <strong>Location:</strong>{" "}
-                {application.job?.location}
+                {application.job?.location || "Not available"}
               </p>
 
               <p>
                 <strong>Salary:</strong>{" "}
-                ₹{application.job?.salary}
+                ₹{application.job?.salary || "Not available"}
               </p>
 
               <p>
                 <strong>Job Type:</strong>{" "}
-                {application.job?.jobType}
+                {application.job?.jobType || "Not available"}
               </p>
 
               <p>
                 <strong>Experience:</strong>{" "}
-                {application.job?.experience}
+                {application.job?.experience || "Not available"}
               </p>
 
               <p>
@@ -98,15 +99,15 @@ const MyApplications = () => {
               <p>
                 <strong>Status:</strong>{" "}
                 <span className="status">
-                  {application.status}
+                  {application.status || "Pending"}
                 </span>
               </p>
 
               <p>
                 <strong>Applied:</strong>{" "}
-                {new Date(
-                  application.createdAt
-                ).toLocaleDateString()}
+                {application.createdAt
+                  ? new Date(application.createdAt).toLocaleDateString()
+                  : "Not available"}
               </p>
             </div>
           ))}
@@ -117,4 +118,3 @@ const MyApplications = () => {
 };
 
 export default MyApplications;
-

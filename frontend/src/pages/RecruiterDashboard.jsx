@@ -197,6 +197,13 @@ const RecruiterDashboard = () => {
                 >
                   Delete Job
                 </button>
+
+                <button
+                    onClick={() => 
+                        navigate(`/applicants/${job._id}`)}
+                >
+                    View Applicants
+                </button>
               </div>
             ))}
           </div>
