@@ -21,12 +21,14 @@ const MyApplications = () => {
           setApplications(response.data.applications);
         } else {
           setMessage(
-            response.data.message || "Failed to load applications"
+            response.data.message ||
+              "Failed to load applications"
           );
         }
       } catch (error) {
         setMessage(
-          error.response?.data?.message || "Failed to load applications"
+          error.response?.data?.message ||
+            "Failed to load applications"
         );
       } finally {
         setLoading(false);
@@ -36,81 +38,188 @@ const MyApplications = () => {
     getApplications();
   }, []);
 
-  // Loading state
+  const getStatusClass = (status) => {
+    const value = status?.toLowerCase();
+
+    if (value === "shortlisted") {
+      return "status-shortlisted";
+    }
+
+    if (value === "selected") {
+      return "status-selected";
+    }
+
+    if (value === "rejected") {
+      return "status-rejected";
+    }
+
+    return "status-applied";
+  };
+
   if (loading) {
-    return <div>Loading applications...</div>;
+    return (
+      <div className="applications-page">
+        <div className="applications-loading">
+          <h2>Loading applications...</h2>
+          <p>
+            Please wait while we load your applications.
+          </p>
+        </div>
+      </div>
+    );
   }
 
-  // Error message
   if (message) {
-    return <div>{message}</div>;
+    return (
+      <div className="applications-page">
+        <div className="applications-error">
+          <h2>Unable to load applications</h2>
+          <p>{message}</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="my-applications">
-      <h1>My Applications</h1>
+    <div className="applications-page">
+
+      <div className="applications-header">
+        <div>
+          <h1>My Applications</h1>
+          <p>
+            Track all the jobs you have applied for.
+          </p>
+        </div>
+
+        <div className="application-count">
+          {applications.length}{" "}
+          {applications.length === 1
+            ? "Application"
+            : "Applications"}
+        </div>
+      </div>
 
       {applications.length === 0 ? (
-        <p>You have not applied for any jobs yet.</p>
+        <div className="no-applications">
+          <div className="empty-icon">📄</div>
+
+          <h2>No Applications Yet</h2>
+
+          <p>
+            You haven't applied for any jobs yet.
+            Explore available jobs and start applying.
+          </p>
+        </div>
       ) : (
         <div className="applications-grid">
-          {applications.map((application) => (
-            <div
-              className="application-card"
-              key={application._id}
-            >
-              <h2>{application.job?.title}</h2>
 
-              <p>
-                <strong>Company:</strong>{" "}
-                {application.job?.company || "Not available"}
-              </p>
+          {applications.map((application) => {
+            const status =
+              application.status || "Applied";
 
-              <p>
-                <strong>Location:</strong>{" "}
-                {application.job?.location || "Not available"}
-              </p>
+            return (
+              <div
+                className="application-card"
+                key={application._id}
+              >
 
-              <p>
-                <strong>Salary:</strong>{" "}
-                ₹{application.job?.salary || "Not available"}
-              </p>
+                <div className="application-card-header">
+                  <div>
+                    <h2>
+                      {application.job?.title ||
+                        "Job Title Not Available"}
+                    </h2>
 
-              <p>
-                <strong>Job Type:</strong>{" "}
-                {application.job?.jobType || "Not available"}
-              </p>
+                    <p className="application-company">
+                      {application.job?.company ||
+                        "Company not available"}
+                    </p>
+                  </div>
 
-              <p>
-                <strong>Experience:</strong>{" "}
-                {application.job?.experience || "Not available"}
-              </p>
+                  <span
+                    className={`application-status ${getStatusClass(
+                      status
+                    )}`}
+                  >
+                    {status}
+                  </span>
+                </div>
 
-              <p>
-                <strong>Resume:</strong>{" "}
-                {application.resume || "Not provided"}
-              </p>
+                <div className="application-info">
 
-              <p>
-                <strong>Cover Letter:</strong>{" "}
-                {application.coverLetter || "Not provided"}
-              </p>
+                  <div>
+                    <span>📍 Location</span>
+                    <strong>
+                      {application.job?.location ||
+                        "Not available"}
+                    </strong>
+                  </div>
 
-              <p>
-                <strong>Status:</strong>{" "}
-                <span className="status">
-                  {application.status || "Pending"}
-                </span>
-              </p>
+                  <div>
+                    <span>💰 Salary</span>
+                    <strong>
+                      {application.job?.salary
+                        ? `₹${application.job.salary}`
+                        : "Not available"}
+                    </strong>
+                  </div>
 
-              <p>
-                <strong>Applied:</strong>{" "}
-                {application.createdAt
-                  ? new Date(application.createdAt).toLocaleDateString()
-                  : "Not available"}
-              </p>
-            </div>
-          ))}
+                  <div>
+                    <span>💼 Job Type</span>
+                    <strong>
+                      {application.job?.jobType ||
+                        "Not available"}
+                    </strong>
+                  </div>
+
+                  <div>
+                    <span>🧑‍💻 Experience</span>
+                    <strong>
+                      {application.job?.experience ||
+                        "Not available"}
+                    </strong>
+                  </div>
+
+                </div>
+
+                <div className="application-details">
+
+                  <div className="application-detail-item">
+                    <span>Resume</span>
+
+                    <strong>
+                      {application.resume ||
+                        "Not provided"}
+                    </strong>
+                  </div>
+
+                  <div className="application-detail-item">
+                    <span>Applied On</span>
+
+                    <strong>
+                      {application.createdAt
+                        ? new Date(
+                            application.createdAt
+                          ).toLocaleDateString()
+                        : "Not available"}
+                    </strong>
+                  </div>
+
+                </div>
+
+                <div className="cover-letter-section">
+                  <h3>Cover Letter</h3>
+
+                  <p>
+                    {application.coverLetter ||
+                      "No cover letter provided."}
+                  </p>
+                </div>
+
+              </div>
+            );
+          })}
+
         </div>
       )}
     </div>
@@ -118,3 +227,4 @@ const MyApplications = () => {
 };
 
 export default MyApplications;
+
